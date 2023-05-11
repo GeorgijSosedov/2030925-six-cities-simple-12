@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../hooks';
+import { store } from '../../store';
 import { postCommentAction } from '../../store/api-action/api-action';
 import { getPostLoadingStatus } from '../../store/reviews/selectors';
 import RatingStar from '../get-rating/get-rating';
@@ -39,14 +40,21 @@ function SendComment({ hotelId }: SendCommentProps) {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+
+    const commentsLength = store.getState().COMMENTS.comments.length;
+
     dispatch(
       postCommentAction({
         hotelId: hotelId,
         comment: formData.review,
         rating: formData.rating,
       })
-    );
-    clearFormData();
+    ).then(
+      () => {
+        if (store.getState().COMMENTS.comments.length !== commentsLength) {
+          clearFormData();
+        }
+      });
   };
 
   useEffect(() => {
@@ -93,7 +101,7 @@ function SendComment({ hotelId }: SendCommentProps) {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={submitButtonDisabled}
+          disabled={submitButtonDisabled || isCommentBeingPosted }
           data-testid='send-comment-button'
         >
           Submit

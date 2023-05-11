@@ -17,3 +17,9 @@ export function sortReviews(reviews: Comments): Comments {
 export function makeHash(obj: object): string {
   return JSON.stringify(obj);
 }
+
+export function capitalizeFirstLetter(text: string): string {
+  const head = text.charAt(0);
+  const tail = text.slice(1);
+  return head.toUpperCase() + tail;
+}

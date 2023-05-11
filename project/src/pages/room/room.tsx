@@ -15,6 +15,8 @@ import { AuthorizationStatus } from '../../const';
 import { fetchSingleOfferAction, fetchNearbyOffersAction, fetchCommentsAction } from '../../store/api-action/api-action';
 import { getComments, getCommentsLoadingStatus } from '../../store/reviews/selectors';
 import PropertyGallery from '../../components/property-gallery/property-gallery';
+import { store } from '../../store';
+import RoomFeatures from '../../components/room-features/room-features';
 
 export default function Room(): JSX.Element {
   const { id } = useParams();
@@ -38,7 +40,7 @@ export default function Room(): JSX.Element {
     }
   }, [id]);
 
-  if (isSingleOfferLoading || areNearbyOffersLoading || areCommentsLoading) {
+  if (isSingleOfferLoading || areNearbyOffersLoading || areCommentsLoading || !offer) {
     return <LoadingScreen />;
   }
 
@@ -96,17 +98,12 @@ export default function Room(): JSX.Element {
                     {offer.rating}
                   </span>
                 </div>
-                <ul className="property__features">
-                  <li className="property__feature property__feature--entire">
-                    {offer.type}
-                  </li>
-                  <li className="property__feature property__feature--bedrooms">
-                    {offer.bedrooms} Bedrooms
-                  </li>
-                  <li className="property__feature property__feature--adults">
-                    Max {offer.maxAdults} adults
-                  </li>
-                </ul>
+                <RoomFeatures
+                  bedrooms={offer.bedrooms}
+                  dataTestId="room-type room-bedroom-count room-max-adult-count"
+                  maxAdults={offer.maxAdults}
+                  type={offer.type}
+                />
                 <div className="property__price">
                   <b className="property__price-value">&euro;{offer.price}</b>
                   <span className="property__price-text">&nbsp;night</span>
@@ -152,7 +149,7 @@ export default function Room(): JSX.Element {
                   <h2 className="reviews__title">
                     Reviews &middot;{' '}
                     <span className="reviews__amount">
-                      {comments.length}
+                      {store.getState().COMMENTS.comments.length}
                     </span>
                   </h2>
                   <CommentsList comments={comments} />
