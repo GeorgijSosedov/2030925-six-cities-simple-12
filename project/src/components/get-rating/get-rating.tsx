@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent } from "react";
 
 type RatingStarProps = {
   value: number;
@@ -19,6 +19,7 @@ function RatingStar({value, onChange, rating, postLoadingStatus}: RatingStarProp
         onChange={onChange}
         data-testid='rating-id'
         checked={value === Number(rating)}
+        disabled={postLoadingStatus}
       />
       <label
         htmlFor={`${value}-stars`}
