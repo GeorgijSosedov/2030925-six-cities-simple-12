@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance, AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 import { saveToken, dropToken } from '../../components/services/api/token';
-import { ApiRoute, Approute } from '../../const';
+import { ApiRoute, Approute, NameSpace } from '../../const';
 import { AuthInfo } from '../../types/auth-data';
 import { Offers, Offer } from '../../types/offer-type';
 import { Comments } from '../../types/review-type';
@@ -74,15 +75,20 @@ export const postCommentAction = createAsyncThunk<
   }
 >(
   'POST_COMMENT',
-  async ({ hotelId, comment, rating }, { dispatch, extra: api }) => {
-    const { data } = await api.post<Comments>(
-      `${ApiRoute.Comments}/${hotelId}`,
-      {
-        comment,
-        rating,
-      }
-    );
-    return data;
+  async ({ hotelId, comment, rating }, { getState, extra: api }) => {
+    try {
+      const { data } = await api.post<Comments>(
+        `${ApiRoute.Comments}/${hotelId}`,
+        {
+          comment,
+          rating,
+        }
+      );
+      return data;
+    } catch {
+      toast.warn('Sorry, we couldn\'t send your comment');
+      return getState()[NameSpace.Comments].comments;
+    }
   }
 );
 

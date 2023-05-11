@@ -20,7 +20,7 @@ export const CITIES: string[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'H
 
 export enum AuthorizationStatus {
   Auth = 'AUTH',
-  NoAuth = 'NO_AUTH',
+  NoAuth = 'AUTH',
   Unknown = 'UNKNOWN',
 }
 
